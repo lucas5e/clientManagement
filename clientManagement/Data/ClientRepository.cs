@@ -1,15 +1,16 @@
-﻿using clientManagement.Models;
+using clientManagement.Models;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
-
+using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 namespace clientManagement.Data
 {
     public class ClientRepository
     {
-        private readonly string _connectionString= "Data Source=TO-20S8QY3;Initial Catalog=ClientManagementDB;User ID=sa;Password=1234;Encrypt=True;Trust Server Certificate=True";
-       
+        private readonly string _connectionString = "Data Source=TO-20S8QY3;Initial Catalog=ClientManagementDB;User ID=sa;Password=1234;Encrypt=True;Trust Server Certificate=True";
+
         public IEnumerable<Client> ListClients()
         {
             var clients = new List<Client>();
@@ -22,7 +23,7 @@ namespace clientManagement.Data
                     conn.Open();
 
                     using (var reader = cmd.ExecuteReader())
-                    { 
+                    {
                         while (reader.Read())
                         {
                             clients.Add(new Client
@@ -30,8 +31,9 @@ namespace clientManagement.Data
                                 Id = (int)reader["Id"],
                                 Name = (string)reader["Name"],
                                 CPF = (string)reader["CPF"],
-                                ClientTypeId = (int)reader["ClientTYpeId"],
-                                ClientStatusId = (int)reader["ClientStatusId"]
+                                ClientTypeId = (int)reader["ClientTypeId"],
+                                ClientStatusId = (int)reader["ClientStatusId"],
+                                Gender = ((string)reader["Gender"])[0]
                             });
                         }
                     }
@@ -62,8 +64,9 @@ namespace clientManagement.Data
                                 Id = (int)reader["Id"],
                                 Name = (string)reader["Name"],
                                 CPF = (string)reader["CPF"],
-                                ClientTypeId = (int)reader["ClientTYpeId"],
-                                ClientStatusId = (int)reader["ClientStatusId"]
+                                ClientTypeId = (int)reader["ClientTypeId"],
+                                ClientStatusId = (int)reader["ClientStatusId"],
+                                Gender = ((string)reader["Gender"])[0]
                             };
                         }
                     }
@@ -83,7 +86,8 @@ namespace clientManagement.Data
                     cmd.Parameters.AddWithValue("@Name", client.Name);
                     cmd.Parameters.AddWithValue("@CPF", client.CPF);
                     cmd.Parameters.AddWithValue("@ClientTypeId", client.ClientTypeId);
-                    cmd.Parameters.AddWithValue("@ClientstatusId", client.ClientStatusId);
+                    cmd.Parameters.AddWithValue("@ClientStatusId", client.ClientStatusId);
+                    cmd.Parameters.AddWithValue("@Gender", client.Gender);
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
@@ -102,6 +106,7 @@ namespace clientManagement.Data
                     cmd.Parameters.AddWithValue("@CPF", client.CPF);
                     cmd.Parameters.AddWithValue("@ClientTypeId", client.ClientTypeId);
                     cmd.Parameters.AddWithValue("@ClientStatusId", client.ClientStatusId);
+                    cmd.Parameters.AddWithValue("@Gender", client.Gender);
                     conn.Open();
                     cmd.ExecuteNonQuery();
                 }
@@ -126,7 +131,7 @@ namespace clientManagement.Data
         {
             using (var conn = new SqlConnection(_connectionString))
             {
-                using (var cmd = new SqlCommand("SELECT COUNT(1) FROM Cliente WHERE CPF = @CPF AND (@Id IS NULL OR Id <> @Id)", conn))
+                using (var cmd = new SqlCommand("SELECT COUNT(1) FROM Client WHERE CPF = @CPF AND (@Id IS NULL OR Id <> @Id)", conn))
                 {
                     cmd.Parameters.AddWithValue("@CPF", cpf);
                     cmd.Parameters.AddWithValue("@Id", id.HasValue ? (object)id.Value : DBNull.Value);
