@@ -9,7 +9,7 @@ namespace clientManagement.Data
 {
     public class ClientRepository
     {
-        private readonly string _connectionString = "Data Source=TO-20S8QY3;Initial Catalog=ClientManagementDB;User ID=sa;Password=1234;Encrypt=True;Trust Server Certificate=True";
+        private readonly string _connectionString = "Data Source=;Initial Catalog=ClientManagementDB;User ID=;Password=;Encrypt=True;Trust Server Certificate=True";
 
         public IEnumerable<Client> ListClients()
         {
