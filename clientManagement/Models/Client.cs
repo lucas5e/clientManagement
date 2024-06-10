@@ -7,5 +7,6 @@
         public required string CPF { get; set; }
         public int ClientTypeId { get; set; }
         public int ClientStatusId { get; set; }
+        public char? Gender { get; set; }
     }
 }
